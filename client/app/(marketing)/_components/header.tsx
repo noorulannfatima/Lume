@@ -125,7 +125,7 @@ export const HeroHeader = () => {
                                     className={buttonVariants({
                                     size:"sm"
                                     })}> 
-                                    Get Started
+                                    Get Started 
                                     </RegisterLink>
                                 </div>
                                 </>

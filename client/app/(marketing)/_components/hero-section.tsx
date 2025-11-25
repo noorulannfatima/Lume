@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import Image from 'next/image'
 import { TextEffect } from '@/components/ui/text-effect'
 import { AnimatedGroup } from '@/components/ui/animated-group'
-import { HeroHeader } from './header'
+import { HeroHeader } from '@/app/(marketing)/_components/header'
 
 import BackgroundImage from "@/public/night-background.jpg"
 import HeroLight from "@/public/hero-light.png"

@@ -11,4 +11,5 @@ export default function Home() {
 }
 
 
-// feature based architcture  or vertical slice architecture that we want to store code next to the features 
+// feature based architcture
+// vertical slice architecture that we want to store code next to the features 

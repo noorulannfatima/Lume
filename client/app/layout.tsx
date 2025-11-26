@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/lib/theme-provider";
 import { AuthProvider } from "@/components/ui/AuthProvider";
+import '@/lib/orpc.server' //  pre-rendering for ssr
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -1,16 +1,18 @@
+'use client';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { getAvatar } from "@/lib/get-avatar";
+import { orpc } from "@/lib/orpc";
 import { LogoutLink , PortalLink} from "@kinde-oss/kinde-auth-nextjs/components";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { CreditCard, LogOut, User } from "lucide-react";
 
-const user = {
-    picture: "https://github.com/shadcn.png",
-    name: "zain",
-    email: "zain@example.com",
-};
 
 export function UserNav() {
+    const {
+        data: {user},
+    } = useSuspenseQuery(orpc.workspace.list.queryOptions());
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -21,12 +23,12 @@ export function UserNav() {
                 bg-bacground/50 border-border/50 hover:bg-accent hover:text-accent-foreground">
                     <Avatar>
                         <AvatarImage 
-                        src={user.picture}
+                        src={getAvatar(user.picture, user.email!)} 
                         alt="User Image"
                         className="object-cover"
                         />
                         <AvatarFallback> 
-                            {user.name.slice(0,2).toUpperCase()}
+                            {user.given_name?.slice(0,2).toUpperCase()}
                         </AvatarFallback>
 
                     </Avatar>
@@ -41,17 +43,19 @@ export function UserNav() {
                 <DropdownMenuLabel className="font-normal flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                     <Avatar className="relative size-8 rounded-lg">
                         <AvatarImage 
-                        src={user.picture}
+                        src={getAvatar(user.picture, user.email!)} 
+                        // added ! mark as email will never be null in this case
                         alt="User Image"
                         className="object-cover"
                         />
                         <AvatarFallback> 
-                            {user.name.slice(0,2).toUpperCase()}
+                            {/* added ? mark as given_name can be null */}
+                            {user.given_name?.slice(0,2).toUpperCase()}
                         </AvatarFallback>
 
                     </Avatar>
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                        <p className="truncate font-medium">{user.name}</p>
+                        <p className="truncate font-medium">{user.given_name}</p>
                         <p className="text-muted-foreground truncate text-sm">{user.email}</p>
                     </div>
                 </DropdownMenuLabel>

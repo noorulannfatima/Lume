@@ -1,12 +1,12 @@
 // procedures are just like action. They get data like create workspace, get workspace etc
 import { KindeOrganization, KindeUser } from '@kinde-oss/kinde-auth-nextjs';
 import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server';
-import {os} from '@orpc/server'
-// os is a builder 
 import {z} from "zod";
 import { base } from '../middlewares/base';
 import { requireAuthMiddleware } from '@/app/middlewares/auth';
 import { requiredWorkspaceMiddleware } from '../middlewares/workspace';
+import { workspaceSchema } from '../schemas/workspace';
+import {init, Organizations} from '@kinde/management-api-js'
 
 export const listWorkspaces = base
 .use(requireAuthMiddleware)
@@ -18,7 +18,8 @@ export const listWorkspaces = base
     tags: ['Workspace']
 })
 .input(z.void())
-.output(z.object({
+.output(
+    z.object({
     workspaces: z.array(
         z.object({
             id: z.string(),
@@ -47,5 +48,67 @@ export const listWorkspaces = base
         })),
         user: context.user,
         currentWorkspace: context.workspace,
+    };
+});
+
+// -----
+ export const createWorkspace = base
+.use(requireAuthMiddleware)
+.use(requiredWorkspaceMiddleware)
+.route({
+    method: 'POST',
+    path: '/workspace',
+    summary: 'Create a new workspace',
+    tags: ['workspace']
+})
+.input(workspaceSchema)
+.output(
+    z.object({
+    orgCode: z.string(),
+    workspaceName: z.string(),
+    })
+    )
+.handler(async ({context, errors, input }) => {
+    init();
+    
+    let data;
+    try {
+        data = await Organizations.createOrganization({
+            requestBody: {
+                name: input.name,
+            },
+        });
+    } catch (error) {
+        throw errors.FORBIDDEN();
+    }
+
+    if(!data.organization?.code) {
+        throw errors.FORBIDDEN({
+            message: "Org code is not defined",
+        });
+    }
+
+    try {
+        await Organizations.addOrganizationUsers({
+            orgCode: data.organization .code,
+            requestBody: {
+                users: [
+                    {
+                      id: context.user.id,
+                      roles: ["admin"],  
+                    },
+                ],
+            },
+        });
+    } catch (error) {
+        throw errors.FORBIDDEN();
+    }
+
+const {refreshTokens} = getKindeServerSession();
+await refreshTokens();
+
+    return {
+        orgCode: data.organization.code,
+        workspaceName: input.name,
     };
 });

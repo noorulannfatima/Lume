@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { workspaceSchema, WorkspaceSchemaType } from "@/app/schemas/workspace";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "@/lib/orpc";
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 export function CreateWorkspace() {
     const [open, setOpen] = useState(false);

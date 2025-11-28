@@ -50,7 +50,7 @@ export function WorkspaceList() {
                         className= {cn(
                             "size-12 transition-all duration-200",
                             getWorkspaceColor(ws.id),
-                            isActive ? "rounded-lg : "rounded-xl hover:rounded-lg"
+                            isActive ? "rounded-lg" : "rounded-xl hover:rounded-lg"
                         )}
                         >
                            <span className="text-sm font-semibold">{ws.avatar}</span> 

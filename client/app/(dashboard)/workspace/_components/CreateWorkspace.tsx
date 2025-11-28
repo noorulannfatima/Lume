@@ -12,6 +12,7 @@ import { workspaceSchema, WorkspaceSchemaType } from "@/app/schemas/workspace";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "@/lib/orpc";
 import { toast } from "sonner";
+import { isDefinedError } from "@orpc/client";
 
 export function CreateWorkspace() {
     const [open, setOpen] = useState(false);
@@ -40,10 +41,19 @@ export function CreateWorkspace() {
                form.reset();
                setOpen(false); 
             },
-            onError: () => {
-                toast.error("Failed to create workspace");
-            }  
-            })
+            onError: (error) => {
+                if (isDefinedError(error)){
+                    if (error.code === "RATE_LIMITED") {
+                        toast.error(error.message);
+                        return;
+                    }
+
+                    toast.error(error.message);
+                }
+
+               toast.error("Failed to create workspace, try again");
+            },
+        })
     );
     // 2. Define a submit handler
     function onSubmit(values: WorkspaceSchemaType) {

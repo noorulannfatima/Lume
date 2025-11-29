@@ -28,10 +28,10 @@ export const heavyWriteSecurityMiddleware = base
 
     if (decision.isDenied()) {
         if (decision.reason.isRateLimit()) {
-        throw errors.RATE_LIMITED ({
-            message: "Too many impactual changes. please slow down.",
-        });
-    }
+            throw errors.RATE_LIMITED ({
+                message: "Too many impactual changes. please slow down.",
+            });
+        }
 
         throw errors.FORBIDDEN({
             message: "Request blocked",

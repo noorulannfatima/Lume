@@ -1,3 +1,5 @@
+
+// models/WorkspaceMember.ts
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/lib/database';
 import User from './User';

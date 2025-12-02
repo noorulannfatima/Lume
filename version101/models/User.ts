@@ -1,3 +1,4 @@
+// models/User.ts
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/lib/database';
 

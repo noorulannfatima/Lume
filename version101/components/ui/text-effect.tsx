@@ -1,5 +1,5 @@
 'use client';
-import { cn } from "@shared/utils';
+import { cn } from "@/utils/utils";
 import {
   AnimatePresence,
   motion

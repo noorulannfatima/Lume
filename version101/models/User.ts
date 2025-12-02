@@ -9,11 +9,14 @@ interface UserAttributes {
   image: string | null;
   password: string | null;
   emailVerified: Date | null;
+  status: 'online' | 'away' | 'offline';
+  statusText: string | null;
+  timezone: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'name' | 'image' | 'password' | 'emailVerified'> {}
+interface UserCreationAttributes extends Optional<UserAttributes, 'id' | 'name' | 'image' | 'password' | 'emailVerified' | 'status' | 'statusText' | 'timezone'> {}
 
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes {
   declare id: string;
@@ -22,6 +25,9 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
   declare image: string | null;
   declare password: string | null;
   declare emailVerified: Date | null;
+  declare status: 'online' | 'away' | 'offline';
+  declare statusText: string | null;
+  declare timezone: string | null;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
 }
@@ -57,6 +63,19 @@ User.init(
       type: DataTypes.DATE,
       allowNull: true,
     },
+    status: {
+      type: DataTypes.ENUM('online', 'away', 'offline'),
+      defaultValue: 'offline',
+      allowNull: false,
+    },
+    statusText: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    timezone: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     sequelize,
@@ -65,4 +84,3 @@ User.init(
   }
 );
 
-export default User;

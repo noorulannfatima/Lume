@@ -1,33 +1,42 @@
-// models/WorkspaceMember.ts
+// models/DirectMessageMember.ts
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/lib/database';
 
-interface WorkspaceMemberAttributes {
+interface DirectMessageMemberAttributes {
   id: string;
+  directMessageId: string;
   userId: string;
-  workspaceId: string;
-  role: 'admin' | 'member' | 'guest';
+  lastReadAt: Date | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface WorkspaceMemberCreationAttributes extends Optional<WorkspaceMemberAttributes, 'id' | 'role'> {}
+interface DirectMessageMemberCreationAttributes extends Optional<DirectMessageMemberAttributes, 'id' | 'lastReadAt'> {}
 
-class WorkspaceMember extends Model<WorkspaceMemberAttributes, WorkspaceMemberCreationAttributes> implements WorkspaceMemberAttributes {
+class DirectMessageMember extends Model<DirectMessageMemberAttributes, DirectMessageMemberCreationAttributes> implements DirectMessageMemberAttributes {
   declare id: string;
+  declare directMessageId: string;
   declare userId: string;
-  declare workspaceId: string;
-  declare role: 'admin' | 'member' | 'guest';
+  declare lastReadAt: Date | null;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
 }
 
-WorkspaceMember.init(
+DirectMessageMember.init(
   {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+    },
+    directMessageId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'direct_messages',
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
     },
     userId: {
       type: DataTypes.UUID,
@@ -38,32 +47,22 @@ WorkspaceMember.init(
       },
       onDelete: 'CASCADE',
     },
-    workspaceId: {
-      type: DataTypes.UUID,
-      allowNull: false,
-      references: {
-        model: 'workspaces',
-        key: 'id',
-      },
-      onDelete: 'CASCADE',
-    },
-    role: {
-      type: DataTypes.ENUM('admin', 'member', 'guest'),
-      allowNull: false,
-      defaultValue: 'member',
+    lastReadAt: {
+      type: DataTypes.DATE,
+      allowNull: true,
     },
   },
   {
     sequelize,
-    tableName: 'workspace_members',
+    tableName: 'direct_message_members',
     timestamps: true,
     indexes: [
       {
         unique: true,
-        fields: ['userId', 'workspaceId'],
+        fields: ['directMessageId', 'userId'],
       },
     ],
   }
 );
 
-export default WorkspaceMember;
+export default DirectMessageMember;

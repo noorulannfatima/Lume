@@ -1,33 +1,42 @@
-// models/WorkspaceMember.ts
+// models/Reaction.ts
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/lib/database';
 
-interface WorkspaceMemberAttributes {
+interface ReactionAttributes {
   id: string;
+  messageId: string;
   userId: string;
-  workspaceId: string;
-  role: 'admin' | 'member' | 'guest';
+  emoji: string;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface WorkspaceMemberCreationAttributes extends Optional<WorkspaceMemberAttributes, 'id' | 'role'> {}
+interface ReactionCreationAttributes extends Optional<ReactionAttributes, 'id'> {}
 
-class WorkspaceMember extends Model<WorkspaceMemberAttributes, WorkspaceMemberCreationAttributes> implements WorkspaceMemberAttributes {
+class Reaction extends Model<ReactionAttributes, ReactionCreationAttributes> implements ReactionAttributes {
   declare id: string;
+  declare messageId: string;
   declare userId: string;
-  declare workspaceId: string;
-  declare role: 'admin' | 'member' | 'guest';
+  declare emoji: string;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
 }
 
-WorkspaceMember.init(
+Reaction.init(
   {
     id: {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
+    },
+    messageId: {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: {
+        model: 'messages',
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
     },
     userId: {
       type: DataTypes.UUID,
@@ -38,32 +47,20 @@ WorkspaceMember.init(
       },
       onDelete: 'CASCADE',
     },
-    workspaceId: {
-      type: DataTypes.UUID,
+    emoji: {
+      type: DataTypes.STRING,
       allowNull: false,
-      references: {
-        model: 'workspaces',
-        key: 'id',
-      },
-      onDelete: 'CASCADE',
-    },
-    role: {
-      type: DataTypes.ENUM('admin', 'member', 'guest'),
-      allowNull: false,
-      defaultValue: 'member',
     },
   },
   {
     sequelize,
-    tableName: 'workspace_members',
+    tableName: 'reactions',
     timestamps: true,
     indexes: [
       {
         unique: true,
-        fields: ['userId', 'workspaceId'],
+        fields: ['messageId', 'userId', 'emoji'],
       },
     ],
   }
 );
-
-export default WorkspaceMember;

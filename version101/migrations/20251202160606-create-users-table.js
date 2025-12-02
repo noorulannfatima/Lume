@@ -1,4 +1,4 @@
-// migrations/XXXXXXXXXXXXXX-create-users-table.js
+// create-users-table.js
 'use strict';
 
 module.exports = {
@@ -27,20 +27,30 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-      emailVerified: {
+      email_verified: {
         type: Sequelize.DATE,
-        allowNull: true,
-        field: 'email_verified'
+        allowNull: true
       },
-      createdAt: {
-        type: Sequelize.DATE,
-        allowNull: false,
-        field: 'created_at'
+      status: {
+        type: Sequelize.ENUM('online', 'away', 'offline'),
+        defaultValue: 'offline',
+        allowNull: false
       },
-      updatedAt: {
+      status_text: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      timezone: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      created_at: {
         type: Sequelize.DATE,
-        allowNull: false,
-        field: 'updated_at'
+        allowNull: false
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false
       }
     });
 

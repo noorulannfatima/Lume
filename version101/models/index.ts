@@ -1,3 +1,4 @@
+// models/index.ts
 import sequelize from '@/lib/database';
 import User from './User';
 import Workspace from './Workspace';

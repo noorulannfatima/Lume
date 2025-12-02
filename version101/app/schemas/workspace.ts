@@ -6,4 +6,3 @@ export const workspaceSchema = z.object({
 })
 
 export type WorkspaceSchemaType = z.infer<typeof workspaceSchema>
-

@@ -1,4 +1,4 @@
-import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { ThemeToggle } from "@frontend/components/ui/theme-toggle";
 
 export function ChannelHeader() {
     return (

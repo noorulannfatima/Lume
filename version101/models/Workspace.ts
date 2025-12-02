@@ -5,15 +5,21 @@ import sequelize from '@/lib/database';
 interface WorkspaceAttributes {
   id: string;
   name: string;
+  slug: string;
+  icon: string | null;
+  description: string | null;
   createdAt?: Date;
   updatedAt?: Date;
 }
 
-interface WorkspaceCreationAttributes extends Optional<WorkspaceAttributes, 'id'> {}
+interface WorkspaceCreationAttributes extends Optional<WorkspaceAttributes, 'id' | 'icon' | 'description'> {}
 
 class Workspace extends Model<WorkspaceAttributes, WorkspaceCreationAttributes> implements WorkspaceAttributes {
   declare id: string;
   declare name: string;
+  declare slug: string;
+  declare icon: string | null;
+  declare description: string | null;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
 }
@@ -28,6 +34,19 @@ Workspace.init(
     name: {
       type: DataTypes.STRING,
       allowNull: false,
+    },
+    slug: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      unique: true,
+    },
+    icon: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    description: {
+      type: DataTypes.TEXT,
+      allowNull: true,
     },
   },
   {

@@ -1,4 +1,4 @@
-// migrations/XXXXXXXXXXXXXX-create-workspaces-table.js
+// create-workspaces-table.js
 'use strict';
 
 module.exports = {
@@ -14,17 +14,30 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      createdAt: {
-        type: Sequelize.DATE,
+      slug: {
+        type: Sequelize.STRING,
         allowNull: false,
-        field: 'created_at'
+        unique: true
       },
-      updatedAt: {
+      icon: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      description: {
+        type: Sequelize.TEXT,
+        allowNull: true
+      },
+      created_at: {
         type: Sequelize.DATE,
-        allowNull: false,
-        field: 'updated_at'
+        allowNull: false
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false
       }
     });
+
+    await queryInterface.addIndex('workspaces', ['slug']);
   },
 
   async down(queryInterface, Sequelize) {

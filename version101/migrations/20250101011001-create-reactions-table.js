@@ -1,4 +1,4 @@
-create-files-table.js
+// create-files-table.js
 'use strict';
 
 module.exports = {

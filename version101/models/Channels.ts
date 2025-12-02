@@ -1,4 +1,4 @@
-// models/Channel.ts
+// models/Channels.ts
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/lib/database';
 
@@ -15,7 +15,7 @@ interface ChannelAttributes {
 
 interface ChannelCreationAttributes extends Optional<ChannelAttributes, 'id' | 'description' | 'isPrivate'> {}
 
-class Channel extends Model<ChannelAttributes, ChannelCreationAttributes> implements ChannelAttributes {
+class Channels extends Model<ChannelAttributes, ChannelCreationAttributes> implements ChannelAttributes {
   declare id: string;
   declare workspaceId: string;
   declare name: string;
@@ -26,7 +26,7 @@ class Channel extends Model<ChannelAttributes, ChannelCreationAttributes> implem
   declare readonly updatedAt: Date;
 }
 
-Channel.init(
+Channels.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -77,4 +77,4 @@ Channel.init(
   }
 );
 
-export default Channel;
+export default Channels;

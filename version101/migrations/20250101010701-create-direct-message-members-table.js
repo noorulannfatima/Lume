@@ -1,4 +1,4 @@
-create-direct-message-members-table.js
+// create-direct-message-members-table.js
 'use strict';
 
 module.exports = {

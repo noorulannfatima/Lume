@@ -1,9 +1,9 @@
-import { Input } from "@/components/ui/input";
+import { RichTextEditor } from "@frontend/components/rich-text-editor/Editor"
 
 export function MessageInputForm() {
     return (
-        <Input className="w-full min-h-12" 
-        placeholder="Type your message here..." 
-        />
-    );
+        <div>
+            <RichTextEditor/>
+        </div>
+    )
 }

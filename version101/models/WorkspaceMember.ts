@@ -57,6 +57,7 @@ WorkspaceMember.init(
     sequelize,
     tableName: 'workspace_members',
     timestamps: true,
+    underscored: true,
     indexes: [
       {
         unique: true,

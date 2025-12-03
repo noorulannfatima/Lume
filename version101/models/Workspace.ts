@@ -53,6 +53,7 @@ Workspace.init(
     sequelize,
     tableName: 'workspaces',
     timestamps: true,
+    underscored: true,
   }
 );
 

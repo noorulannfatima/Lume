@@ -11,6 +11,31 @@ const models = {
   WorkspaceMember,
 };
 
+// Define associations
+// WorkspaceMember belongs to Workspace
+WorkspaceMember.belongsTo(Workspace, {
+  foreignKey: 'workspaceId',
+  as: 'workspace',
+});
+
+// WorkspaceMember belongs to User
+WorkspaceMember.belongsTo(User, {
+  foreignKey: 'userId',
+  as: 'user',
+});
+
+// Workspace has many WorkspaceMembers
+Workspace.hasMany(WorkspaceMember, {
+  foreignKey: 'workspaceId',
+  as: 'members',
+});
+
+// User has many WorkspaceMembers
+User.hasMany(WorkspaceMember, {
+  foreignKey: 'userId',
+  as: 'workspaceMemberships',
+});
+
 // Sync database (only in development)
 export const syncDatabase = async () => {
   try {

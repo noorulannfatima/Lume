@@ -1,6 +1,7 @@
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/utils/utils";
-import { Hash, Link } from "lucide-react";
+import { Hash } from "lucide-react";
+import Link from "next/link";
 
 const channels = [
     {

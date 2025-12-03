@@ -2,7 +2,7 @@
 import { WorkspaceHeader } from './_components/WorkspaceHeader'
 import { CreateNewChannel } from './_components/CreateNewChannel'
 import { ChannelList } from './_components/ChannelList'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@frontend/components/ui/collapsible'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { WorkspaceMembersList } from './_components/WorkspaceMembersList'
  

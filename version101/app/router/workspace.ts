@@ -88,9 +88,25 @@ export const listWorkspaces = base
     )
 .handler(async ({context, errors, input }) => {
     try {
+        // Generate base slug from workspace name
+        let slug = input.name
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '') // Remove special characters
+            .replace(/\s+/g, '-') // Replace spaces with hyphens
+            .replace(/-+/g, '-'); // Replace multiple hyphens with single hyphen
+
+        // Check if slug already exists and append random suffix if needed
+        const existingWorkspace = await Workspace.findOne({ where: { slug } });
+        if (existingWorkspace) {
+            const randomSuffix = Math.random().toString(36).substring(2, 8);
+            slug = `${slug}-${randomSuffix}`;
+        }
+
         // Create the workspace
         const workspace = await Workspace.create({
             name: input.name,
+            slug: slug,
         });
 
         // Add the current user as an admin of the workspace

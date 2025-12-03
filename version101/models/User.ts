@@ -81,6 +81,7 @@ User.init(
     sequelize,
     tableName: 'users',
     timestamps: true,
+    underscored: true, // Map camelCase to snake_case columns
   }
 );
 

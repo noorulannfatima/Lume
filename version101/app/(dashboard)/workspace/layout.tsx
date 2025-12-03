@@ -3,8 +3,8 @@ import React, { ReactNode } from 'react'
 import { WorkspaceList } from './_components/WorkspaceList'
 import { CreateWorkspace } from './_components/CreateWorkspace';
 import { UserNav } from './_components/UserNav';
-import { getQueryClient, HydrateClient } from "@frontend/lib/query/hydration';
-import { orpc } from "@frontend/lib/orpc';
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration";
+import { orpc } from "@/lib/orpc";
 
 const WorkspaceLayout = async ({children}: {children: ReactNode}) => {
   const queryClient = getQueryClient();

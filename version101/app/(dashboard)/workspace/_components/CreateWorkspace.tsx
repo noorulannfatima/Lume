@@ -8,7 +8,7 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { workspaceSchema, WorkspaceSchemaType } from "@/schemas/workspace";
+import { workspaceSchema, WorkspaceSchemaType } from "@/app/schemas/workspace";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "@/lib/orpc";
 import { toast } from "sonner";

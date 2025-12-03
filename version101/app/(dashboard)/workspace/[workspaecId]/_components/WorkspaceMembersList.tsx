@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback } from "@frontend/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 
 const members = [
@@ -38,6 +38,7 @@ export function WorkspaceMembersList() {
                             alt="User Image"
                             className="object-cover"
                             fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                             />
                             <AvatarFallback>
                                 {member.name.charAt(0).toUpperCase()}

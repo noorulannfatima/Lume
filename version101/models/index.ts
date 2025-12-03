@@ -3,12 +3,14 @@ import sequelize from '@/lib/database';
 import User from './User';
 import Workspace from './Workspace';
 import WorkspaceMember from './WorkspaceMember';
+import Channels from './Channels';
 
 // Initialize all models and their associations
 const models = {
   User,
   Workspace,
   WorkspaceMember,
+  Channels,
 };
 
 // Define associations
@@ -36,6 +38,30 @@ User.hasMany(WorkspaceMember, {
   as: 'workspaceMemberships',
 });
 
+// Channels belongs to Workspace
+Channels.belongsTo(Workspace, {
+  foreignKey: 'workspaceId',
+  as: 'workspace',
+});
+
+// Channels belongs to User (creator)
+Channels.belongsTo(User, {
+  foreignKey: 'createdById',
+  as: 'creator',
+});
+
+// Workspace has many Channels
+Workspace.hasMany(Channels, {
+  foreignKey: 'workspaceId',
+  as: 'channels',
+});
+
+// User has many Channels (as creator)
+User.hasMany(Channels, {
+  foreignKey: 'createdById',
+  as: 'createdChannels',
+});
+
 // Sync database (only in development)
 export const syncDatabase = async () => {
   try {
@@ -52,5 +78,5 @@ export const syncDatabase = async () => {
   }
 };
 
-export { sequelize, User, Workspace, WorkspaceMember };
+export { sequelize, User, Workspace, WorkspaceMember, Channels };
 export default models;

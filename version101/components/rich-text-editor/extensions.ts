@@ -3,7 +3,7 @@ import TextAlign from "@tiptap/extension-text-align";
 import { all, createLowlight } from "lowlight";
 import CodeBlock from "@tiptap/extension-code-block-lowlight";
 import { Placeholder } from "@tiptap/extension-placeholder";
-
+//
 // create a lowlight instance with all languages loaded
 const lowlight = createLowlight(all)
 

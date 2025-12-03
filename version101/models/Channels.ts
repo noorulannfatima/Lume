@@ -68,6 +68,7 @@ Channels.init(
     sequelize,
     tableName: 'channels',
     timestamps: true,
+    underscored: true,
     indexes: [
       {
         unique: true,

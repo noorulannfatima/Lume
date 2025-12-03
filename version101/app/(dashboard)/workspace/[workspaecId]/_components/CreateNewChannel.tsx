@@ -10,11 +10,17 @@ import { Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { orpc } from "@/lib/orpc";
+import { toast } from "sonner";
+import { isDefinedError } from "@orpc/client";
 
  
  
  export function CreateNewChannel() {
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+    const queryClient = useQueryClient();
+
     const form = useForm<z.infer<typeof ChannelNameSchema>>({
         resolver: zodResolver(ChannelNameSchema),
         defaultValues: {
@@ -24,6 +30,38 @@ import { z } from "zod";
   
     const watchedName = form.watch("name");
     const transformedName = watchedName ? transformChannelName(watchedName) : "";
+
+    // Create mutation for channel creation
+    const createChannelMutation = useMutation(
+        orpc.channel.create.mutationOptions({
+            onSuccess: (newChannel) => {
+                toast.success(
+                    `Channel "${newChannel.channelName}" created successfully`
+                );
+
+                // Invalidate queries if needed
+                queryClient.invalidateQueries({
+                    queryKey: ['channels'],
+                });
+
+                form.reset();
+                setOpen(false);
+            },
+            onError: (error) => {
+                if (isDefinedError(error)) {
+                    toast.error(error.message);
+                    return;
+                }
+
+                toast.error("Failed to create channel, try again");
+            },
+        })
+    );
+
+    // Submit handler
+    function onSubmit(values: z.infer<typeof ChannelNameSchema>) {
+        createChannelMutation.mutate(values);
+    }
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
@@ -42,7 +80,7 @@ import { z } from "zod";
                 </DialogHeader>
 
                 <Form {...form}>
-                    <form className="space-y-6">
+                    <form className="space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
                         <FormField
                         control={form.control}
                         name="name"
@@ -63,8 +101,10 @@ import { z } from "zod";
                             </FormItem>
                         )}
                         />
-                        <Button type="submit">
-                            Create new channel
+                        <Button type="submit" disabled={createChannelMutation.isPending}>
+                            {createChannelMutation.isPending 
+                                ? "Creating..." 
+                                : "Create new channel"}
                         </Button>
                         
                     </form>

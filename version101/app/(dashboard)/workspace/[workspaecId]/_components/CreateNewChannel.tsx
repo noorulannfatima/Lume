@@ -17,7 +17,7 @@ import { isDefinedError } from "@orpc/client";
 import { useParams, useRouter } from "next/navigation";
 
 
- 
+ //
  
  export function CreateNewChannel() {
     const [open, setOpen] = useState(false);
@@ -51,7 +51,7 @@ import { useParams, useRouter } from "next/navigation";
                 form.reset();
                 setOpen(false);
 
-                router.push(`/workspace/${workspaceId}/channel/${newChannel.id}`);
+                router.push(`/workspace/${workspaceId}/channel/${newChannel.channelId}`);
 
             },
             onError: (error) => {

@@ -10,33 +10,11 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 function ChannelList() {
     // Fetch channels using React Query
-    const { 
-    data: {channels, isLoading, error} 
-    } = useSuspenseQuery(orpc.channel.list.queryOptions());
+    const { data: channels } = useSuspenseQuery(orpc.channel.list.queryOptions());
     const {workspaceId, channelId} = useParams<{
         workspaceId: string;
         channelId: string;
     }>();
-
-    if (isLoading) {
-        return (
-            <div className="space-y-0.5 py-1">
-                <div className="px-2 py-1 text-sm text-muted-foreground">
-                    Loading channels...
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="space-y-0.5 py-1">
-                <div className="px-2 py-1 text-sm text-destructive">
-                    Failed to load channels
-                </div>
-            </div>
-        );
-    }
 
     if (!channels || channels.length === 0) {
         return (

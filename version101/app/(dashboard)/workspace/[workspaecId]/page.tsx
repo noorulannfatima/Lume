@@ -8,10 +8,10 @@ import { CreateNewChannel } from "./_components/CreateNewChannel";
 interface iAppProps {
     params: Promise<{workspaceId: string}>;
 }
-
+//
 const WorkspacePage = async({params}: iAppProps) => {
   const {workspaceId} = await params;
-  const {channels} = await client.channel.list();
+  const channels = await client.channel.list();
 
   if(channels.length > 0){
     return redirect(`/workspace/${workspaceId}/channel/${channels[0].id}`);

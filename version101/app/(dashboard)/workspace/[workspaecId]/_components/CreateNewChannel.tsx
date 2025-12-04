@@ -14,12 +14,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { orpc } from "@/lib/orpc";
 import { toast } from "sonner";
 import { isDefinedError } from "@orpc/client";
+import { useParams, useRouter } from "next/navigation";
+
 
  
  
  export function CreateNewChannel() {
     const [open, setOpen] = useState(false);
     const queryClient = useQueryClient();
+    const router = useRouter();
+    const {workspaceId} = useParams<{workspaceId: string}>();
 
     const form = useForm<z.infer<typeof ChannelNameSchema>>({
         resolver: zodResolver(ChannelNameSchema),
@@ -46,6 +50,9 @@ import { isDefinedError } from "@orpc/client";
 
                 form.reset();
                 setOpen(false);
+
+                router.push(`/workspace/${workspaceId}/channel/${newChannel.id}`);
+
             },
             onError: (error) => {
                 if (isDefinedError(error)) {

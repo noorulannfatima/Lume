@@ -5,6 +5,46 @@ import { requiredWorkspaceMiddleware } from "@/middlewares/workspace";
 import { ChannelNameSchema } from "@/app/schemas/channel";
 import { Channels } from "@/models";
 
+export const listChannels = base
+.use(requireAuthMiddleware)
+.use(requiredWorkspaceMiddleware)
+.route({
+    method: "GET",
+    path: "/channels",
+    summary: "Get all channels in a workspace",
+    tags: ["Channels"],
+})
+.output(z.array(z.object({
+    id: z.string(),
+    name: z.string(),
+    description: z.string().nullable(),
+    isPrivate: z.boolean(),
+    createdAt: z.date(),
+})))
+.handler(async ({ context }) => {
+    try {
+        const channels = await Channels.findAll({
+            where: {
+                workspaceId: context.workspace.id,
+            },
+            order: [['createdAt', 'ASC']],
+        });
+
+        return channels.map(channel => ({
+            id: channel.id,
+            name: channel.name,
+            description: channel.description,
+            isPrivate: channel.isPrivate,
+            createdAt: channel.createdAt,
+        }));
+    } catch (error: any) {
+        console.error('Error fetching channels:', error);
+        throw context.errors.INTERNAL_SERVER_ERROR({
+            message: "Failed to fetch channels",
+        });
+    }
+});
+
 export const createChannel = base
 .use(requireAuthMiddleware)
 .use(requiredWorkspaceMiddleware)

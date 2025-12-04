@@ -1,9 +1,74 @@
-import { RichTextEditor } from "@/components/rich-text-editor/Editor"
+'use client'
+import { createMessageSchema, CreateMessageSchemaType } from "@/app/schemas/message"
+import { 
+    Form, 
+    FormControl, 
+    FormField, 
+    FormItem, 
+    FormMessage } from "@/components/ui/form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { MessageComponser } from "./MessageComponser"
+import { toast } from "sonner"
+import { orpc } from "@/lib/orpc"
 
-export function MessageInputForm() {
-    return (
-        <div>
-            <RichTextEditor/>
-        </div>
-    )
+
+interface iAppProps {
+    channelId: string;
+}
+
+export function MessageInputForm({channelId}: iAppProps) {
+
+    const form = useForm({
+        resolver: zodResolver(createMessageSchema),
+        defaultValues: {
+            channelId: channelId,
+            content: "",
+        },
+    });
+
+
+
+    const createMessageMutation = useMutation(
+        orpc.message.create.mutationOptions({
+            onSuccess: () => {
+                return toast.success("message created successfully");
+            },
+            onError: () => {
+                return toast.error("message created failed");
+            },
+        })
+    );
+
+    function onSubmit(data: CreateMessageSchemaType) {
+        createMessageMutation.mutate(data);
+    }
+
+   return(
+    <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+            control={form.control}
+            name="content"
+            render={({field}) => (
+                <FormItem>
+                    <FormControl>
+                        <MessageComponser
+                        value={field.value}
+                        onChange={field.onChange}
+                        />
+                    </FormControl>
+                    <FormMessage/>
+                </FormItem>
+                
+                />
+            )}
+            
+            
+            />
+                
+            
+        </form>
+    </Form>
+   )
 }//

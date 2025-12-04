@@ -4,13 +4,17 @@ import User from './User';
 import Workspace from './Workspace';
 import WorkspaceMember from './WorkspaceMember';
 import Channels from './Channels';
+import ChannelMember from './ChannelsMember';
+import Message from './Message';
 
-// Initialize all models and their associations
+// Initialize models and their associations
 const models = {
   User,
   Workspace,
   WorkspaceMember,
   Channels,
+  ChannelMember,
+  Message,
 };
 
 // Define associations

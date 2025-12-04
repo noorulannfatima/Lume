@@ -10,33 +10,11 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 
 function ChannelList() {
     // Fetch channels using React Query
-    const { 
-    data: {channels, isLoading, error} 
-    } = useSuspenseQuery(orpc.channel.list.queryOptions());
-    const {workspaceId, channelId} = useParams<{
-        workspaceId: string;
+    const { data: channels } = useSuspenseQuery(orpc.channel.list.queryOptions());
+    const {workspaecId, channelId} = useParams<{
+        workspaecId: string;
         channelId: string;
     }>();
-
-    if (isLoading) {
-        return (
-            <div className="space-y-0.5 py-1">
-                <div className="px-2 py-1 text-sm text-muted-foreground">
-                    Loading channels...
-                </div>
-            </div>
-        );
-    }
-
-    if (error) {
-        return (
-            <div className="space-y-0.5 py-1">
-                <div className="px-2 py-1 text-sm text-destructive">
-                    Failed to load channels
-                </div>
-            </div>
-        );
-    }
 
     if (!channels || channels.length === 0) {
         return (
@@ -65,7 +43,7 @@ function ChannelList() {
                         ),
                     })}
                     key={channel.id} 
-                    href={`/workspace/${workspaceId}/channel/${channel.id}`}
+                    href={`/workspace/${workspaecId}/channel/${channel.id}`}
                 >
                     <Hash className="size-4"/>
                     <span className="truncate">{channel.name}</span>

@@ -6,7 +6,7 @@ import { headers } from 'next/headers'
 import { getServerSession } from 'next-auth'
 import { authOptions } from './auth'
 
-globalThis.$client = createRouterClient(router, {
+export const client = createRouterClient(router, {
   /** 
    * Provide initial context if needed.
    *
@@ -23,3 +23,5 @@ globalThis.$client = createRouterClient(router, {
     }
   },
 })
+
+globalThis.$client = client

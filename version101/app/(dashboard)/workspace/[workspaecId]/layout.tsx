@@ -5,10 +5,20 @@ import { ChannelList } from './_components/ChannelList'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ChevronDown, ChevronUp } from 'lucide-react'
 import { WorkspaceMembersList } from './_components/WorkspaceMembersList'
+import { getQueryClient, HydrateClient } from "@/lib/query/hydration"
+import { client } from "@/lib/orpc.server"
  
- const ChannelListLayout = ({children}: {children: React.ReactNode}) => {
+ const ChannelListLayout = async ({children}: {children: React.ReactNode}) => {
+  const queryClient = getQueryClient();
+  
+  // Prefetch the channel list data on the server
+  await queryClient.prefetchQuery({
+    queryKey: [['channel', 'list'], { input: undefined, type: 'query' }],
+    queryFn: () => client.channel.list(),
+  });
+
    return (
-     <>
+     <HydrateClient client={queryClient}>
      <div className='flex h-full w-80 flex-col bg-secondary border-r 
      border-border'>
         {/* Header */}
@@ -55,7 +65,8 @@ import { WorkspaceMembersList } from './_components/WorkspaceMembersList'
             </Collapsible>
         </div>
      </div>
-     </>
+     {children}
+     </HydrateClient>
    )
  }
  

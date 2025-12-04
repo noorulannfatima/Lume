@@ -23,7 +23,7 @@ import { useParams, useRouter } from "next/navigation";
     const [open, setOpen] = useState(false);
     const queryClient = useQueryClient();
     const router = useRouter();
-    const {workspaceId} = useParams<{workspaceId: string}>();
+    const {workspaecId} = useParams<{workspaecId: string}>();
 
     const form = useForm<z.infer<typeof ChannelNameSchema>>({
         resolver: zodResolver(ChannelNameSchema),
@@ -51,7 +51,7 @@ import { useParams, useRouter } from "next/navigation";
                 form.reset();
                 setOpen(false);
 
-                router.push(`/workspace/${workspaceId}/channel/${newChannel.id}`);
+                router.push(`/workspace/${workspaecId}/channel/${newChannel.channelId}`);
 
             },
             onError: (error) => {

@@ -1,18 +1,18 @@
 import { SafeContent } from "@/components/rich-text-editor/SafeContent";
-import Message from "@/models/Message";
+import { MessageSchemaType } from "@/app/schemas/message";
 import { getAvatar } from "@/utils/get-avatar";
 import Image from "next/image";
 
 
 interface iAppProps {
-    message: Message;
+    message: MessageSchemaType;
 
 }
 export function MessageItem ({message}: iAppProps) {
     return (
         <div className="flex space-x-3 relative p-3 rounded-lg group hover:bg-muted/50">
             <Image
-            src={getAvatar(message.userId, "")} // add message.userEmail here too 
+            src={getAvatar(message.user.image, message.user.email)} 
             alt="User Avatar"
             width={32}
             height={32}

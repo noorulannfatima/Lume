@@ -105,6 +105,7 @@ Message.init(
     tableName: 'messages',
     timestamps: true,
     paranoid: true,
+    underscored: true,
     indexes: [
       {
         fields: ['channelId', 'createdAt'],

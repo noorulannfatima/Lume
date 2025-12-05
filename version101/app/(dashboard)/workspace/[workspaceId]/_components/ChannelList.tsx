@@ -11,8 +11,8 @@ import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 function ChannelList() {
     // Fetch channels using React Query
     const { data: channels } = useSuspenseQuery(orpc.channel.list.queryOptions());
-    const {workspaecId, channelId} = useParams<{
-        workspaecId: string;
+    const {workspaceId, channelId} = useParams<{
+        workspaceId: string;
         channelId: string;
     }>();
 
@@ -43,7 +43,7 @@ function ChannelList() {
                         ),
                     })}
                     key={channel.id} 
-                    href={`/workspace/${workspaecId}/channel/${channel.id}`}
+                    href={`/workspace/${workspaceId}/channel/${channel.id}`}
                 >
                     <Hash className="size-4"/>
                     <span className="truncate">{channel.name}</span>

@@ -28,3 +28,16 @@ export const ChannelNameSchema = z.object({
         return transformed;
     }),
  });
+
+ export const ChannelSchema = z.object({
+    id: z.string(),
+    workspaceId: z.string(),
+    name: z.string(),
+    description: z.string().nullable(),
+    isPrivate: z.boolean(),
+    createdById: z.string(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+});
+
+export type ChannelSchemaType = z.infer<typeof ChannelSchema>;

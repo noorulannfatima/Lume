@@ -88,3 +88,47 @@ export const createChannel = base
         });
     }
 });
+
+export const getChannel = base
+.use(requireAuthMiddleware)
+.use(requiredWorkspaceMiddleware)
+.route({
+    method: "GET",
+    path: "/channels/:channelId",
+    summary: "Get a single channel by ID",
+    tags: ["Channels"],
+})
+.input(z.object({
+    channelId: z.string(),
+}))
+.output(z.object({
+    id: z.string(),
+    name: z.string(),
+    description: z.string().nullable(),
+    isPrivate: z.boolean(),
+    workspaceId: z.string(),
+    createdAt: z.date(),
+}))
+.handler(async ({ input, context, errors }) => {
+    const channel = await Channels.findOne({
+        where: {
+            id: input.channelId,
+            workspaceId: context.workspace.id,
+        },
+    });
+
+    if (!channel) {
+        throw errors.NOT_FOUND({
+            message: "Channel not found",
+        });
+    }
+
+    return {
+        id: channel.id,
+        name: channel.name,
+        description: channel.description,
+        isPrivate: channel.isPrivate,
+        workspaceId: channel.workspaceId,
+        createdAt: channel.createdAt,
+    };
+});

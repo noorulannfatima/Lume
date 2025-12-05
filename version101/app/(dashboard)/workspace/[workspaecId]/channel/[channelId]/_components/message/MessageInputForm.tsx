@@ -11,7 +11,7 @@ import { useForm } from "react-hook-form"
 import { MessageComponser } from "./MessageComponser"
 import { toast } from "sonner"
 import { orpc } from "@/lib/orpc"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 
 interface iAppProps {
@@ -19,6 +19,8 @@ interface iAppProps {
 }
 
 export function MessageInputForm({channelId}: iAppProps) {
+
+    const queryClient = useQueryClient();
 
     const form = useForm<CreateMessageSchemaType>({
         resolver: zodResolver(createMessageSchema),
@@ -33,7 +35,10 @@ export function MessageInputForm({channelId}: iAppProps) {
     const createMessageMutation = useMutation(
         orpc.message.create.mutationOptions({
             onSuccess: () => {
-                form.reset();
+                queryClient.invalidateQueries({
+                    queryKey: orpc.message.list.key(),
+                });
+                
                 return toast.success("message created successfully");
             },
             onError: () => {
@@ -58,6 +63,8 @@ export function MessageInputForm({channelId}: iAppProps) {
                         <MessageComponser
                         value={field.value || ""}
                         onChange={field.onChange}
+                        onSubmit={() => onSubmit(form.getValues())}
+                        isSubmitting={createMessageMutation.isPending}
                         />
                     </FormControl>
                     <FormMessage/>

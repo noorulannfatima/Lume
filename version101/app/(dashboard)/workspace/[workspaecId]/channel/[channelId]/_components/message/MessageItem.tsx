@@ -1,24 +1,18 @@
+import { SafeContent } from "@/components/rich-text-editor/SafeContent";
+import Message from "@/models/Message";
+import { getAvatar } from "@/utils/get-avatar";
 import Image from "next/image";
 
 
 interface iAppProps {
-    message: string;
-    date: Date;
-    avatar: string;
-    userName: string;
+    message: Message;
 
 }
-export function MessageItem ({
-    message,
-    date,
-    avatar, 
-    userName,
-}: iAppProps) {
+export function MessageItem ({message}: iAppProps) {
     return (
-        <div className="flex space-x-3 relative p-3
-        rounded-lg group hover:bg-muted/50">
+        <div className="flex space-x-3 relative p-3 rounded-lg group hover:bg-muted/50">
             <Image
-            src={avatar} 
+            src={getAvatar(message.userId, "")} // add message.userEmail here too 
             alt="User Avatar"
             width={32}
             height={32}
@@ -26,23 +20,26 @@ export function MessageItem ({
             />
             <div className="flex-1 space-y-1 min-w-0">
                 <div className="flex items-center gap-x-2">
-                    <p className="font-medium leading-none">{userName}</p>
+                    <p className="font-medium leading-none">{message.userId}</p>
                     <p className="text-sm text-muted-foreground leading-none">
                         {new Intl.DateTimeFormat('en-GB', {
                             day: "numeric",
                             month: "short",
                             year: "numeric",
-                        }).format(date)} {"  "}
+                        }).format(message.createdAt)} {"  "}
 
                         {new Intl.DateTimeFormat('en-GB', {
                             hour12: false,
                             hour: "2-digit",
                             minute: "2-digit",
-                        }).format(date)}
+                        }).format(message.createdAt)}
                     </p>
                 </div>
 
-                <p className="text-sm break-work max-w-none">{message}</p>
+                <SafeContent 
+                className="text-sm break-words prose dark:prose-invert 
+                max-w-none mark:text-primary"
+                content={JSON.parse(message.content)}/>
             </div>
         </div>
     );

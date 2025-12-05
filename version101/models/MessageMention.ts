@@ -1,28 +1,26 @@
-// models/Reaction.ts
+// models/MessageMention.ts
 import { DataTypes, Model, Optional } from 'sequelize';
 import sequelize from '@/lib/database';
 
-interface ReactionAttributes {
+interface MessageMentionAttributes {
   id: string;
   messageId: string;
   userId: string;
-  emoji: string;
+  mentionedUserId: string;
   createdAt?: Date;
-  updatedAt?: Date;
 }
 
-interface ReactionCreationAttributes extends Optional<ReactionAttributes, 'id'> {}
+interface MessageMentionCreationAttributes extends Optional<MessageMentionAttributes, 'id'> {}
 
-class Reaction extends Model<ReactionAttributes, ReactionCreationAttributes> implements ReactionAttributes {
+class MessageMention extends Model<MessageMentionAttributes, MessageMentionCreationAttributes> implements MessageMentionAttributes {
   declare id: string;
   declare messageId: string;
   declare userId: string;
-  declare emoji: string;
+  declare mentionedUserId: string;
   declare readonly createdAt: Date;
-  declare readonly updatedAt: Date;
 }
 
-Reaction.init(
+MessageMention.init(
   {
     id: {
       type: DataTypes.UUID,
@@ -46,24 +44,35 @@ Reaction.init(
         key: 'id',
       },
       onDelete: 'CASCADE',
+      comment: 'User who sent the message with mention',
     },
-    emoji: {
-      type: DataTypes.STRING,
+    mentionedUserId: {
+      type: DataTypes.UUID,
       allowNull: false,
+      references: {
+        model: 'users',
+        key: 'id',
+      },
+      onDelete: 'CASCADE',
+      comment: 'User who was mentioned',
     },
   },
   {
     sequelize,
-    tableName: 'reactions',
+    tableName: 'message_mentions',
     timestamps: true,
+    updatedAt: false,
+    underscored: true,
     indexes: [
       {
         unique: true,
-        fields: ['messageId', 'userId', 'emoji'],
+        fields: ['messageId', 'mentionedUserId'],
+      },
+      {
+        fields: ['mentionedUserId', 'createdAt'],
       },
     ],
   }
 );
 
-
-export default Reaction;
+export default MessageMention;

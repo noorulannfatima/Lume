@@ -21,7 +21,7 @@ export const createMessage = base
 
 .handler(async ({ input, context, errors }) => {
 // verify the channel belogs to the user's orginization
-const channel = await Channels.findAll({
+const channel = await Channels.findOne({
     where: {
         id: input.channelId,
         workspaceId: context.workspace.id,
@@ -46,4 +46,41 @@ const created = await Message.create({
 
 return  created;
 
+});
+
+
+export const listMessages = base
+.use(requireAuthMiddleware)
+.use(requiredWorkspaceMiddleware)
+.route({
+    method: "GET",
+    path: "/messages",
+    summary: "List all messages",
+    tags: ["Messages"],
+})
+.input(z.object({
+    channelId: z.string(),
+}))
+.output(z.array(z.custom<Message>()))
+.handler(async ({ input, context, errors }) => {
+    const channel = await Channels.findOne({
+        where: {
+            id: input.channelId,
+            workspaceId: context.workspace.id,
+        },
+    });
+    if(!channel) {
+        throw errors.NOT_FOUND({
+            message: "Channel not found",
+        });
+    }
+    const data = await Message.findAll({
+        where: {
+            channelId: input.channelId,
+        },
+        order: [
+            ['createdAt', 'DESC']
+        ],
+    });
+    return data;
 });

@@ -43,7 +43,7 @@ export function MenuBar ({ editor }: MenuBarProps) {
         <TooltipTrigger asChild>
           <Toggle 
           size="sm" 
-          pressed={editorState?.isBold} 
+          pressed={!!editorState?.isBold} 
           onPressedChange={() => editor.chain().focus().toggleBold().run()
           }
           className={cn(
@@ -62,7 +62,7 @@ export function MenuBar ({ editor }: MenuBarProps) {
         <TooltipTrigger asChild>
           <Toggle 
           size="sm" 
-          pressed={editorState?.isItalic} 
+          pressed={!!editorState?.isItalic} 
           onPressedChange={() => editor.chain().focus().toggleItalic().run()
           }
           className={cn(
@@ -81,7 +81,7 @@ export function MenuBar ({ editor }: MenuBarProps) {
         <TooltipTrigger asChild>
           <Toggle 
           size="sm" 
-          pressed={editorState?.isStrike} 
+          pressed={!!editorState?.isStrike} 
           onPressedChange={() => editor.chain().focus().toggleStrike().run()
           }
           className={cn(
@@ -100,7 +100,7 @@ export function MenuBar ({ editor }: MenuBarProps) {
         <TooltipTrigger asChild>
           <Toggle 
           size="sm" 
-          pressed={editorState?.isCodeBlock} 
+          pressed={!!editorState?.isCodeBlock} 
           onPressedChange={() => editor.chain().focus().toggleCodeBlock().run()
           }
           className={cn(
@@ -123,7 +123,7 @@ export function MenuBar ({ editor }: MenuBarProps) {
         <TooltipTrigger asChild>
           <Toggle 
           size="sm" 
-          pressed={editorState?.isBulletList} 
+          pressed={!!editorState?.isBulletList} 
           onPressedChange={() => editor.chain().focus().toggleBulletList().run()
           }
           className={cn(
@@ -142,7 +142,7 @@ export function MenuBar ({ editor }: MenuBarProps) {
         <TooltipTrigger asChild>
           <Toggle 
           size="sm" 
-          pressed={editorState?.isOrderedList} 
+          pressed={!!editorState?.isOrderedList} 
           onPressedChange={() => editor.chain().focus().toggleOrderedList().run()
           }
           className={cn(

@@ -39,16 +39,14 @@ export function RichTextEditor({field, sendButton, footerLeft}: iAppProps) {
     });
 //
     return (
-        <div className="flex flex-col relative w-full border-input 
-        rounded-lg overflow-hidden dark:bg-input/30">
+        <div className="flex flex-col relative w-full border-input rounded-lg overflow-hidden dark:bg-input/30">
             <MenuBar editor={editor}/>
             <EditorContent 
             editor={editor}
             className="max-h-[200px] overflow-y-auto"
             />
 
-            <div className="flex items-center justify-between gap-2 px-3 py-2 
-            border-t border-input bg-card">
+            <div className="flex items-center justify-between gap-2 px-3 py-2 border-t border-input bg-card">
                 <div className="min-h-8 flex items-center">{footerLeft}</div>
                 <div className="shrink-0">{sendButton}</div>
             </div>

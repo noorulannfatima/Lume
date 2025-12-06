@@ -20,7 +20,7 @@ export function MessageItem ({message}: iAppProps) {
             />
             <div className="flex-1 space-y-1 min-w-0">
                 <div className="flex items-center gap-x-2">
-                    <p className="font-medium leading-none">{message.userId}</p>
+                    <p className="font-medium leading-none">{message.user.name || message.user.email}</p>
                     <p className="text-sm text-muted-foreground leading-none">
                         {new Intl.DateTimeFormat('en-GB', {
                             day: "numeric",

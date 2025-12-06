@@ -62,13 +62,19 @@ export const listMessages = base
 .route({
     method: "GET",
     path: "/messages",
-    summary: "List all messages",
+    summary: "List all messages with cursor pagination",
     tags: ["Messages"],
 })
-.input(z.object({
+.input(z.object({ 
     channelId: z.string(),
+    cursor: z.string().optional(),
+    limit: z.number().int().min(1).max(100).default(50),
 }))
-.output(z.array(MessageSchema))
+.output(z.object({
+    messages: z.array(MessageSchema),
+    nextCursor: z.string().nullable(),
+    hasMore: z.boolean(),
+}))
 .handler(async ({ input, context, errors }) => {
     const channel = await Channels.findOne({
         where: {
@@ -81,13 +87,28 @@ export const listMessages = base
             message: "Channel not found",
         });
     }
+
+    const { Op } = await import('sequelize');
+    
+    // Build the where clause
+    const whereClause: any = {
+        channelId: input.channelId,
+    };
+
+    // Add cursor condition if provided
+    if (input.cursor) {
+        whereClause.id = {
+            [Op.lt]: input.cursor,
+        };
+    }
+
+    // Fetch limit + 1 to determine if there are more messages
     const data = await Message.findAll({
-        where: {
-            channelId: input.channelId,
-        },
+        where: whereClause,
         order: [
-            ['createdAt', 'DESC']
+            ['id', 'DESC']
         ],
+        limit: input.limit + 1,
         include: [
             {
                 model: User,
@@ -95,5 +116,19 @@ export const listMessages = base
             }
         ]
     });
-    return data as any;
+
+    // Check if there are more messages
+    const hasMore = data.length > input.limit;
+    
+    // Remove the extra message if we have more
+    const messages = hasMore ? data.slice(0, input.limit) : data;
+    
+    // Get the next cursor (ID of the last message in this page)
+    const nextCursor = messages.length > 0 ? messages[messages.length - 1].id : null;
+
+    return {
+        messages: messages as any,
+        nextCursor,
+        hasMore,
+    };
 });

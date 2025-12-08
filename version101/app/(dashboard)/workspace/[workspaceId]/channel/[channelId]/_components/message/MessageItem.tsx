@@ -9,6 +9,19 @@ interface iAppProps {
 
 }
 export function MessageItem ({message}: iAppProps) {
+    // Safely parse JSON content with fallback
+    const parseContent = () => {
+        try {
+            if (!message.content || message.content.trim() === '') {
+                return { type: 'doc', content: [] };
+            }
+            return JSON.parse(message.content);
+        } catch (error) {
+            console.error('Failed to parse message content:', error);
+            return { type: 'doc', content: [] };
+        }
+    };
+
     return (
         <div className="flex space-x-3 relative p-3 rounded-lg group hover:bg-muted/50">
             <Image
@@ -39,7 +52,19 @@ export function MessageItem ({message}: iAppProps) {
                 <SafeContent 
                 className="text-sm break-words prose dark:prose-invert 
                 max-w-none mark:text-primary"
-                content={JSON.parse(message.content)}/>
+                content={parseContent()}/>
+
+                {message.attachments && typeof message.attachments === "string" && message.attachments.trim() !== "" && (
+                    <div className="mt-3">
+                    <Image
+                    src={message.attachments}
+                    alt="Message attachment"
+                    width={512}
+                    height={512}
+                    className="rounded-md mx-h-[320px] w-auto object-contain"
+                    />
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -20,7 +20,7 @@ export const MessageSchema = z.object({
     threadId: z.string().nullable(),
     userId: z.string(),
     content: z.string(),
-    attachments: z.any().nullable(),
+    attachments: z.string().nullable(),
     isEdited: z.boolean(),
     isPinned: z.boolean(),
     deletedAt: z.date().nullable(),

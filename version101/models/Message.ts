@@ -9,7 +9,7 @@ interface MessageAttributes {
   threadId: string | null;
   userId: string;
   content: string;
-  attachments: object | null;
+  attachments: string | null;
   isEdited: boolean;
   isPinned: boolean;
   deletedAt: Date | null;
@@ -26,7 +26,7 @@ class Message extends Model<MessageAttributes, MessageCreationAttributes> implem
   declare threadId: string | null;
   declare userId: string;
   declare content: string;
-  declare attachments: object | null;
+  declare attachments: string | null;
   declare isEdited: boolean;
   declare isPinned: boolean;
   declare deletedAt: Date | null;

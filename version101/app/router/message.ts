@@ -37,7 +37,7 @@ if(!channel) {
 
 const created = await Message.create({
     content: input.content,
-    attachments: input.imageUrl ? { url: input.imageUrl } : null,
+    attachments: input.imageUrl ?? null,
     channelId: input.channelId,
     userId: context.user.id,
 });

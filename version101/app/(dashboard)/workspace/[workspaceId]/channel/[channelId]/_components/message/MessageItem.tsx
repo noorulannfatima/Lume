@@ -22,6 +22,26 @@ export function MessageItem ({message}: iAppProps) {
         }
     };
 
+    // Handle both object format {url: string} and string format
+    const getAttachmentUrl = (): string | null => {
+        if (!message.attachments) return null;
+        
+        if (typeof message.attachments === 'string') {
+            return message.attachments.trim() || null;
+        }
+        
+        if (typeof message.attachments === 'object' && 'url' in message.attachments) {
+            return (message.attachments as any).url || null;
+        }
+        
+        return null;
+    };
+
+    const attachmentUrl = getAttachmentUrl();
+
+    // Debug logging
+    console.log('📎 Message ID:', message.id, 'Attachments:', message.attachments, 'Type:', typeof message.attachments, 'Extracted URL:', attachmentUrl);
+
     return (
         <div className="flex space-x-3 relative p-3 rounded-lg group hover:bg-muted/50">
             <Image
@@ -54,15 +74,15 @@ export function MessageItem ({message}: iAppProps) {
                 max-w-none mark:text-primary"
                 content={parseContent()}/>
 
-                {message.attachments && typeof message.attachments === "string" && message.attachments.trim() !== "" && (
+                {attachmentUrl && (
                     <div className="mt-3">
-                    <Image
-                    src={message.attachments}
-                    alt="Message attachment"
-                    width={512}
-                    height={512}
-                    className="rounded-md mx-h-[320px] w-auto object-contain"
-                    />
+                        <Image
+                        src={attachmentUrl}
+                        alt="Message attachment"
+                        width={512}
+                        height={512}
+                        className="rounded-md mx-h-[320px] w-auto object-contain"
+                        />
                     </div>
                 )}
             </div>

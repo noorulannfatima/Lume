@@ -46,6 +46,7 @@ export function MessageInputForm({channelId}: iAppProps) {
                 // reset react hook form
                 form.reset({channelId: channelId, content: ""});
                 setEditorKey((k) => k + 1);
+                upload.clear(); // Clear the uploaded attachment state
 
                 return toast.success("message created successfully");
             },
@@ -56,6 +57,7 @@ export function MessageInputForm({channelId}: iAppProps) {
     );
 
     function onSubmit(data: CreateMessageSchemaType) {
+        console.log('🚀 Submitting message with imageUrl:', upload.stagedUrl);
         createMessageMutation.mutate({
             ...data,
             imageUrl: upload.stagedUrl ?? undefined,

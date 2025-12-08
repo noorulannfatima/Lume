@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "avatar.vercel.sh",
       },
+      {
+        protocol: "https",
+        hostname: "sjdbaptw58.ufs.sh",// for uploading attachment
+      },
     ],
   },
   serverExternalPackages: ['sequelize', 'pg'],

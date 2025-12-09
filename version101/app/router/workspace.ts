@@ -9,7 +9,7 @@ import { Workspace, WorkspaceMember } from '@/models';
 
 export const listWorkspaces = base
 .use(requireAuthMiddleware)
-.use(requiredWorkspaceMiddleware)
+// .use(requiredWorkspaceMiddleware)
 
 .route({
     method: 'GET',
@@ -17,7 +17,9 @@ export const listWorkspaces = base
     summary: 'List all workspaces',
     tags: ['Workspace']
 })
-.input(z.void())
+.input(z.object({
+    workspaceId: z.string().optional(),
+}))
 .output(
     z.object({
     workspaces: z.array(
@@ -39,7 +41,7 @@ export const listWorkspaces = base
     }),
 })
 )
-.handler(async ({context, errors }) => {
+.handler(async ({context, errors, input }) => {
     // Fetch all workspaces for the current user
     const memberships = await WorkspaceMember.findAll({
         where: { userId: context.user.id },
@@ -62,10 +64,14 @@ export const listWorkspaces = base
         };
     });
 
+    const currentWorkspace = input.workspaceId 
+        ? workspaces.find(w => w.id === input.workspaceId) 
+        : workspaces[0];
+
     return {
         workspaces,
         user: context.user,
-        currentWorkspace: context.workspace,
+        currentWorkspace: currentWorkspace || workspaces[0],
     };
 });
 

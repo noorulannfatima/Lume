@@ -11,7 +11,9 @@ interface iAppProps {
 
 const WorkspacePage = async({params}: iAppProps) => {
   const {workspaceId} = await params;
-  const channels = await client.channel.list();
+  const channels = await client.channel.list({
+    workspaceId: workspaceId,
+  });
 
   if(channels.length > 0){
     return redirect(`/workspace/${workspaceId}/channel/${channels[0].id}`);

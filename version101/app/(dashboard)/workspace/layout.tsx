@@ -9,7 +9,9 @@ import { orpc } from "@/lib/orpc";
 const WorkspaceLayout = async ({children}: {children: ReactNode}) => {
   const queryClient = getQueryClient();
 
-  await queryClient.prefetchQuery(orpc.workspace.list.queryOptions())
+  await queryClient.prefetchQuery(orpc.workspace.list.queryOptions({
+    input: {},
+  }))
   return (
     <div className='flex w-full h-screen'>
         <div className='flex h-full w-16 flex-col items-center bg-secondary py-3 

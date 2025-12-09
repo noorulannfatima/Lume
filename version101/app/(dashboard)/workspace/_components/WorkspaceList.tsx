@@ -33,7 +33,9 @@ export function WorkspaceList() {
     //it won't fetch the data but it hydrate it on client side
     const {
         data: { workspaces, currentWorkspace},
-    } = useSuspenseQuery(orpc.workspace.list.queryOptions());
+    } = useSuspenseQuery(orpc.workspace.list.queryOptions({
+        input: {},
+    }));
 
     return (
        <TooltipProvider>

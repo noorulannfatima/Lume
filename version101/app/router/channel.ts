@@ -7,13 +7,16 @@ import { Channels } from "@/models";
 
 export const listChannels = base
 .use(requireAuthMiddleware)
-.use(requiredWorkspaceMiddleware)
+// .use(requiredWorkspaceMiddleware)
 .route({
     method: "GET",
     path: "/channels",
     summary: "Get all channels in a workspace",
     tags: ["Channels"],
 })
+.input(z.object({
+    workspaceId: z.string(),
+}))
 .output(z.array(z.object({
     id: z.string(),
     name: z.string(),
@@ -21,11 +24,11 @@ export const listChannels = base
     isPrivate: z.boolean(),
     createdAt: z.date(),
 })))
-.handler(async ({ context }) => {
+.handler(async ({ context, input }) => {
     try {
         const channels = await Channels.findAll({
             where: {
-                workspaceId: context.workspace.id,
+                workspaceId: input.workspaceId,
             },
             order: [['createdAt', 'ASC']],
         });
@@ -47,14 +50,16 @@ export const listChannels = base
 
 export const createChannel = base
 .use(requireAuthMiddleware)
-.use(requiredWorkspaceMiddleware)
+// .use(requiredWorkspaceMiddleware)
 
 .route({
     method: "POST",
     path: "/channels",
     summary: "Create a new channel",
     tags: ["Channels"],
-}).input(ChannelNameSchema)
+}).input(ChannelNameSchema.extend({
+    workspaceId: z.string(),
+}))
 .output(z.object({
     channelId: z.string(),
     channelName: z.string(),
@@ -64,7 +69,7 @@ export const createChannel = base
         // Create the channel
         const channel = await Channels.create({
             name: input.name,
-            workspaceId: context.workspace.id,
+            workspaceId: input.workspaceId,
             createdById: context.user.id,
             isPrivate: false,
         });
@@ -91,7 +96,7 @@ export const createChannel = base
 
 export const getChannel = base
 .use(requireAuthMiddleware)
-.use(requiredWorkspaceMiddleware)
+// .use(requiredWorkspaceMiddleware)
 .route({
     method: "GET",
     path: "/channels/:channelId",
@@ -100,6 +105,7 @@ export const getChannel = base
 })
 .input(z.object({
     channelId: z.string(),
+    workspaceId: z.string(),
 }))
 .output(z.object({
     id: z.string(),
@@ -113,7 +119,7 @@ export const getChannel = base
     const channel = await Channels.findOne({
         where: {
             id: input.channelId,
-            workspaceId: context.workspace.id,
+            workspaceId: input.workspaceId,
         },
     });
 

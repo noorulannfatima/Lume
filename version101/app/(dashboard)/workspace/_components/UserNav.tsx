@@ -15,7 +15,9 @@ import { Billing } from "./Billing";
 export function UserNav() {
     const {
         data: {user},
-    } = useSuspenseQuery(orpc.workspace.list.queryOptions());
+    } = useSuspenseQuery(orpc.workspace.list.queryOptions({
+        input: {},
+    }));
     
     const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
     const [billingOpen, setBillingOpen] = useState(false);

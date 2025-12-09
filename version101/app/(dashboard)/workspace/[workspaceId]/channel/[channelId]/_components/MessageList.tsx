@@ -11,7 +11,7 @@ import { ChevronDown, Loader2 } from "lucide-react";
 
 export function MessageList() {
 
-    const {channelId} = useParams<{channelId: string}>();
+    const {channelId, workspaceId} = useParams<{channelId: string, workspaceId: string}>();
     const [hasInitialScrolled, setHasInitialScrolled] = useState(false);
     const scrollRef = useRef<HTMLDivElement | null>(null);
     const bottomRef = useRef<HTMLDivElement | null>(null); // to scroll the user to bottom
@@ -23,15 +23,20 @@ export function MessageList() {
     const infiniteOptions = orpc.message.list.infiniteOptions({
         input: (pageParam: string | undefined) => ({
             channelId: channelId,
+            workspaceId: workspaceId,
             limit: 10,
             cursor: pageParam,
         }),
+        // custom query key
+        queryKey: ['message.list', channelId],
         initialPageParam: undefined,
         getNextPageParam: (lastPage: { nextCursor: string | null; hasMore: boolean }) => lastPage.nextCursor,
+        // Flatten the pages into a single array of messages and reverse them
+        // We reverse because the backend returns newest first (for pagination), but we want to display oldest at top
         select: (data: any) => ({
             pages : [...data.pages].reverse().map((p: any) => ({ 
                 ...p, 
-                items: [...p.messages].reverse()
+                items: [...p.messages].reverse() // Reverse items within each page to show oldest -> newest
             })),
             pageParams: [...data.pageParams].reverse(),
         }),

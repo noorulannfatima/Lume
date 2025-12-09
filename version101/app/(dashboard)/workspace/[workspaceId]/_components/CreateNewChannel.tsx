@@ -45,7 +45,7 @@ import { useParams, useRouter } from "next/navigation";
 
                 // Invalidate queries if needed
                 queryClient.invalidateQueries({
-                    queryKey: ['channels'],
+                    queryKey: ['channels', workspaceId],
                 });
 
                 form.reset();
@@ -67,7 +67,10 @@ import { useParams, useRouter } from "next/navigation";
 
     // Submit handler
     function onSubmit(values: z.infer<typeof ChannelNameSchema>) {
-        createChannelMutation.mutate(values);
+        createChannelMutation.mutate({
+            ...values,
+            workspaceId,
+        });
     }
 
     return (

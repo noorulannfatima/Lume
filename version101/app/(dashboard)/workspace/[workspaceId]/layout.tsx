@@ -8,13 +8,14 @@ import { WorkspaceMembersList } from './_components/WorkspaceMembersList'
 import { getQueryClient, HydrateClient } from "@/lib/query/hydration"
 import { client } from "@/lib/orpc.server"
  
- const ChannelListLayout = async ({children}: {children: React.ReactNode}) => {
+  const ChannelListLayout = async ({children, params}: {children: React.ReactNode, params: Promise<{workspaceId: string}>}) => {
   const queryClient = getQueryClient();
+  const { workspaceId } = await params;
   
   // Prefetch the channel list data on the server
   await queryClient.prefetchQuery({
-    queryKey: [['channel', 'list'], { input: undefined, type: 'query' }],
-    queryFn: () => client.channel.list(),
+    queryKey: [['channel', 'list'], { input: { workspaceId }, type: 'query' }],
+    queryFn: () => client.channel.list({ workspaceId }),
   });
 
    return (

@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation'
 import { orpc } from '@/lib/orpc'
 
 import { useSession } from 'next-auth/react'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const ChannelPage = () => {
 
@@ -25,13 +26,32 @@ const ChannelPage = () => {
           }
         })
     );
+    if (error) {
+        return <h1>Something went wrong in page.tsx</h1>
+    }
 //
   return (
     <div className='flex h-screen w-full'>
         {/* Main Channel Area */}
         <div className='flex flex-col flex-1 min-w-0'>
             {/* Fixed Header */}
-          <ChannelHeader channelName={data?.name}/>
+          {/* <ChannelHeader channelName={data?.name}/> */}
+          {isLoading ? (
+            <div className='flex items-center justify-between
+            h-14 px-4 border-b'>
+              <Skeleton className='h-6 w-40'/>
+              <div className='flex items-center space-x-2'>
+                <Skeleton className='h-8 w-28'/>
+                <Skeleton className='h-8 w-20'/>
+                <Skeleton className='size-8'/>
+              </div>
+            </div>
+          
+          ): (
+            <div>
+              <ChannelHeader channelName={data?.name}/>
+            </div>
+          )}
 
           {/* Scrollable Messages Area */}
         <div className='flex-1 overflow-hidden mb-4'>

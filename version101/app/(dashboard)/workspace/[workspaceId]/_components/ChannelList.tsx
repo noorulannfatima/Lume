@@ -17,7 +17,6 @@ function ChannelList() {
     // Fetch channels using React Query
     const { data: channels } = useSuspenseQuery(orpc.channel.list.queryOptions({
         input: { workspaceId },
-        queryKey: ['channels', workspaceId],
     }));
 
     if (!channels || channels.length === 0) {

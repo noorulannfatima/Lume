@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getAvatar } from "@/utils/get-avatar";
 import { User } from "next-auth";
-import Image from "next/image";
+import Image from "next/image";//
 
 interface MemberItemProps {
     member: User;
@@ -21,7 +21,7 @@ export function MemberItem({member}: MemberItemProps) {
                       className="object-cover"
                       />
                       <AvatarFallback>
-                        {member.name.charAt(0).toUpperCase()}
+                        {member.name?.charAt(0).toUpperCase() ?? "M"}
                       </AvatarFallback>
                     </Avatar>
                 </div>

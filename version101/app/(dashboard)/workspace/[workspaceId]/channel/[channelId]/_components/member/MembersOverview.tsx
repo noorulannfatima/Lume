@@ -23,8 +23,8 @@ export function MembersOverview() {
     const query = search.trim().toLowerCase();
     const filteredMembers = query 
     ? members.filter((m) => {
-        const name = m.name.toLowerCase();
-        const email = m.email.toLowerCase();
+        const name = m.name?.toLowerCase() ?? '';
+        const email = m.email?.toLowerCase() ?? '';
 
         return name?.includes(query) || email?.includes(query);
     }) : members;

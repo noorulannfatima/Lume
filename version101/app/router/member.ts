@@ -3,7 +3,7 @@ import { base } from "@/middlewares/base";
 import { requiredWorkspaceMiddleware } from "@/middlewares/workspace";
 import { inviteMemberSchema } from "../schemas/member";
 import { UserSchema } from "../schemas/message";
-import { User, WorkspaceMember } from "@/models";
+import { User, WorkspaceMember, Workspace } from "@/models";
 import z from "zod";
 
 
@@ -25,42 +25,57 @@ export const inviteMember = base
     console.log("[DEBUG] Input:", JSON.stringify(input, null, 2));
     console.log("[DEBUG] User ID:", context.user.id);
 
-    // verify user is member of the workspace
-    const member = await WorkspaceMember.findOne({
+    // verify requester is member of the workspace
+    const requesterMembership = await WorkspaceMember.findOne({
         where: {
             userId: context.user.id,
-            workspaceId: input.workspaceId,
+            workspaceId: context.workspace.id,
         },
     });
-    console.log("[DEBUG] WorkspaceMember found:", !!member);
 
-    if (!member) {
-        console.error("[DEBUG] User is not a member of the workspace");
+    if (!requesterMembership) {
         throw errors.FORBIDDEN({
             message: "You are not a member of this workspace",
         });
     }
 
     try {
-        const created = await User.create({
-            name: input.name,
-            email: input.email,
-            workspaceId: input.workspaceId,
-        });
-        console.log("[DEBUG] User created:", created.id);
-        
-        await created.reload({
-            include: [
-                {
-                    model: Workspace,
-                    as: 'workspace',
-                }
-            ]
+        // 1. Find or create the user
+        let user = await User.findOne({ where: { email: input.email } });
+
+        if (!user) {
+            user = await User.create({
+                name: input.name,
+                email: input.email,
+            });
+            console.log("[DEBUG] User created:", user.id);
+        } else {
+            console.log("[DEBUG] User found:", user.id);
+        }
+
+        // 2. Check if already a member
+        const existingMembership = await WorkspaceMember.findOne({
+            where: {
+                userId: user.id,
+                workspaceId: context.workspace.id,
+            },
         });
 
-        return created as any;
+        if (existingMembership) {
+            // Already a member, just return the user
+            return user;
+        }
+
+        // 3. Add to workspace
+        await WorkspaceMember.create({
+            userId: user.id,
+            workspaceId: context.workspace.id,
+            role: 'member', // Default role
+        });
+
+        return user;
     } catch (error) {
-        console.error("[DEBUG] Database creation error:", error);
+        console.error("[DEBUG] Invite member error:", error);
         throw error;
     }
 });
@@ -96,7 +111,7 @@ export const listMembers = base
                 message: "Members not found",
             });
         }
-        return members as any;
+        return members.map((m: any) => m.user) as any;
         
     } catch (error) {
         console.error("[DEBUG] Database fetch error:", error);

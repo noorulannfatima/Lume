@@ -1,4 +1,4 @@
-"use client" // it trips js bundels for interactivity - client component
+"use client" // it trips js bundels for interactivity - client component//
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
@@ -35,7 +35,7 @@ export function CreateWorkspace() {
                 );
 
                 queryClient.invalidateQueries({
-                    queryKey: orpc.workspace.list.queryKey(),
+                    queryKey: orpc.workspace.list.queryKey({ input: {} }),
                 });
 
                form.reset();

@@ -2,13 +2,19 @@ import { SafeContent } from "@/components/rich-text-editor/SafeContent";
 import { MessageSchemaType } from "@/app/schemas/message";
 import { getAvatar } from "@/utils/get-avatar";
 import Image from "next/image";
+import { MessageHoverToolbar } from "../toolbar";
+import { useState } from "react";
+import { EditMessage } from "../toolbar/EditMessage";
 
 
 interface iAppProps {
     message: MessageSchemaType;
+    currentUserId: string;
 
 }
-export function MessageItem ({message}: iAppProps) {
+// currentUserId is needed to check if the user can edit the message
+export function MessageItem ({message, currentUserId}: iAppProps) {
+    const [isEditing, setIsEditing] = useState(false)
     // Safely parse JSON content with fallback
     const parseContent = () => {
         try {
@@ -69,7 +75,14 @@ export function MessageItem ({message}: iAppProps) {
                     </p>
                 </div>
 
-                <SafeContent 
+                {isEditing ? (
+                    <EditMessage
+                    message={message}
+                    onCancel={() => setIsEditing(false)}
+                    onSave={() => setIsEditing(false)} />
+                ) : (
+                    <>
+                    <SafeContent 
                 className="text-sm break-words prose dark:prose-invert 
                 max-w-none mark:text-primary"
                 content={parseContent()}/>
@@ -85,7 +98,16 @@ export function MessageItem ({message}: iAppProps) {
                         />
                     </div>
                 )}
+                    </>
+                )
+                }
+                
             </div>
+
+            <MessageHoverToolbar 
+            messageId={message.id} 
+            canEdit={message.user.id === currentUserId} 
+            onEdit={() => setIsEditing(true)}/>
         </div>
     );
 } 

@@ -4,7 +4,7 @@ import { requiredWorkspaceMiddleware } from "@/middlewares/workspace";
 import Message from "@/models/Message";
 import User from "@/models/User";
 import z from "zod";
-import { createMessageSchema, MessageSchema } from "../schemas/message";
+import { createMessageSchema, MessageSchema, updateMessageSchema } from "../schemas/message";
 import { Channels, WorkspaceMember } from "@/models";
 import { getAvatar } from "@/utils/get-avatar";
 
@@ -164,3 +164,72 @@ export const listMessages = base
         hasMore,
     };
 });
+
+
+export const updatedMessage = base
+.use(requireAuthMiddleware)
+.use(requiredWorkspaceMiddleware)
+.route({
+    method: "PUT",
+    path: "/messages/:id",
+    summary: "Update a message",
+    tags: ["Messages"],
+})
+.input(updateMessageSchema)
+.output(z.object({
+    message: MessageSchema,
+    canEdit: z.boolean(),
+}))
+.handler(async ({ input, context, errors }) => {
+    const message = await Message.findOne({
+        where: {
+            id: input.id,
+        },
+    });
+
+    if(!message){
+        throw errors.NOT_FOUND({
+            message: "Message not found",
+        });
+    }
+
+    if(message.userId !== context.user.id) {
+        throw errors.FORBIDDEN({
+            message: "You can only edit your own messages",
+        });
+    }
+
+    if (message.channelId) {
+        const channel = await Channels.findOne({
+            where: {
+                id: message.channelId,
+                workspaceId: context.workspace.id,
+            }
+        });
+
+        if (!channel) {
+             throw errors.NOT_FOUND({
+                message: "Message channel not found in this workspace",
+            });
+        }
+    }
+
+    await message.update({
+        content: input.content,
+        isEdited: true,
+    });
+
+    await message.reload({
+        include: [
+            {
+                model: User,
+                as: 'user',
+            }
+        ]
+    });
+
+    return {
+        message: message as any,
+        canEdit: message.userId === context.user.id,
+    }
+})

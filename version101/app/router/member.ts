@@ -83,20 +83,38 @@ export const inviteMember = base
 
 export const listMembers = base
 .use(requireAuthMiddleware)
-.use(requiredWorkspaceMiddleware)
+// .use(requiredWorkspaceMiddleware)
 .route({
     method: "GET",
     path: "/workspace/members",
     summary: "List members of a workspace",
     tags: ["Members"],
 })
-.input(z.void())
+.input(z.object({
+    workspaceId: z.string(),
+}))
 .output(UserSchema.array())
-.handler(async ({ context, errors }) => {
+.handler(async ({ context, input, errors }) => {
+    console.log("[DEBUG] listMembers called");
+    console.log("[DEBUG] Input:", JSON.stringify(input, null, 2));
     try {
+        // Verify requester is a member of the workspace
+        const membership = await WorkspaceMember.findOne({
+            where: {
+                userId: context.user.id,
+                workspaceId: input.workspaceId,
+            },
+        });
+
+        if (!membership) {
+            throw errors.FORBIDDEN({
+                message: "You are not a member of this workspace",
+            });
+        }
+
         const members = await WorkspaceMember.findAll({
             where: {
-                workspaceId: context.workspace.id,
+                workspaceId: input.workspaceId,
             },
             include: [
                 {

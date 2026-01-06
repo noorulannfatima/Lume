@@ -18,6 +18,11 @@ import { client } from "@/lib/orpc.server"
     queryFn: () => client.channel.list({ workspaceId }),
   });
 
+  await queryClient.prefetchQuery({
+    queryKey: [['workspace', 'member', 'list'], { input: { workspaceId }, type: 'query' }],
+    queryFn: () => client.workspace.member.list({ workspaceId }),
+  });
+
    return (
      <HydrateClient client={queryClient}>
      <div className='flex h-full w-80 flex-col bg-secondary border-r 

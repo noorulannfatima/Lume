@@ -8,11 +8,16 @@ import { MemberItem } from "./MemberItem";
 import { Skeleton } from "@/components/ui/skeleton";
 
 
+import { useParams } from "next/navigation";
+
 export function MembersOverview() {
+    const { workspaceId } = useParams<{ workspaceId: string }>();
     const [open, setOpen] = useState(false);
     const [search, setSearch] = useState('');
     const {data, isLoading, error} = useQuery(
-        orpc.workspace.member.list.queryOptions()
+        orpc.workspace.member.list.queryOptions({
+            input: { workspaceId },
+        })
     );
 
     if(error) {

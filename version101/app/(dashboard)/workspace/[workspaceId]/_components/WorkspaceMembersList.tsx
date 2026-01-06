@@ -1,47 +1,39 @@
+"use client";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
-
-const members = [
-    {
-        id: 1,
-        name: "Member 1",
-        imageUrl:"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        email: "member1@example.com"
-    },
-    {
-        id: 2,
-        name: "Member 2",
-        imageUrl:"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        email: "member2@example.com"
-    },
-    {
-        id: 3,
-        name: "Member 3",
-        imageUrl:"https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-        email: "member3@example.com"
-    },
-];
-
+import { useParams } from "next/navigation";
+import { orpc } from "@/lib/orpc";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export function WorkspaceMembersList() {
+    const { workspaceId } = useParams<{ workspaceId: string }>();
+
+    const { data: members } = useSuspenseQuery(
+        orpc.workspace.member.list.queryOptions({
+            input: { workspaceId },
+        })
+    );
+
     return (
         <div className="space-y-0.5 py-1">
             {members.map((member) =>(
                 <div 
-                className="px-3 py-2 hover:bg-accent cursor-pointer
-                transition-colors flex items-center space-x-3" 
+                className="px-3 py-2 hover:bg-accent cursor-pointer transition-colors flex items-center space-x-3" 
                 key={member.id}>
                     <div className="relative">
                         <Avatar className="size-8 relative">
-                            <Image
-                            src={member.imageUrl}
-                            alt="User Image"
-                            className="object-cover"
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                            />
+                            {member.image ? (
+                                <Image
+                                    src={member.image}
+                                    alt="User Image"
+                                    className="object-cover"
+                                    fill
+                                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                />
+                            ) : null}
                             <AvatarFallback>
-                                {member.name.charAt(0).toUpperCase()}
+                                {member.name?.charAt(0).toUpperCase()}
                             </AvatarFallback>
                         </Avatar>
                     </div>

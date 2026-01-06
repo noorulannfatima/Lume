@@ -6,7 +6,10 @@ import { router } from '@/app/router'
 const handler = new RPCHandler(router, {
   interceptors: [
     onError((error) => {
-      console.error(error)
+      console.error("RPC Error:", error)
+      if (error instanceof Error && 'issues' in error) {
+          console.error("Validation Issues:", JSON.stringify((error as any).issues, null, 2));
+      }
     }),
   ],
 })

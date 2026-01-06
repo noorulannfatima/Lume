@@ -37,8 +37,7 @@ const ChannelPage = () => {
             {/* Fixed Header */}
           {/* <ChannelHeader channelName={data?.name}/> */}
           {isLoading ? (
-            <div className='flex items-center justify-between
-            h-14 px-4 border-b'>
+            <div className='flex items-center justify-between h-14 px-4 border-b'>
               <Skeleton className='h-6 w-40'/>
               <div className='flex items-center space-x-2'>
                 <Skeleton className='h-8 w-28'/>

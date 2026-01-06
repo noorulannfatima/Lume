@@ -30,7 +30,15 @@ export const MessageSchema = z.object({
     user: UserSchema,
 });
 
+export const updateMessageSchema = z.object({
+    id: z.string(),
+    content: z.string(), 
+})
+
 export type MessageSchemaType = z.infer<typeof MessageSchema>;
 
 export type CreateMessageSchemaType = z.infer<typeof createMessageSchema>;
+
+export type UpdateMessageSchemaType = z.infer<typeof updateMessageSchema>;
+
 

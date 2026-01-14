@@ -5,6 +5,7 @@ export const createMessageSchema = z.object({
     workspaceId: z.string(),
     content: z.string(),
     imageUrl: z.string().optional(),
+    threadId: z.string().optional(),
 });
 
 export const UserSchema = z.object({

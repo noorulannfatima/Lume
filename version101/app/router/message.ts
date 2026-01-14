@@ -57,12 +57,40 @@ export const createMessage = base
         });
     }
 
+    // if this is a thread reply, validate the parent message
+    if(input.threadId) {
+        const parentMessage = await Message.findOne({
+            where: {
+                id: input.threadId,
+            },
+            include: [
+                {
+                    model: Channels,
+                    where: {
+                        workspaceId: input.workspaceId,
+                    },
+                    required: true,
+                }
+            ]
+        });
+
+        if (!parentMessage || parentMessage.channelId !== input.channelId ||
+            parentMessage.threadId !== null) 
+            {
+               throw errors.BAD_REQUEST({
+                message: "Parent message not found",
+            });
+        }
+        console.log("[DEBUG] Parent message found:", !!parentMessage);
+    }
+
     try {
         const created = await Message.create({
             content: input.content,
             attachments: input.imageUrl ? { url: input.imageUrl } : null,
             channelId: input.channelId,
             userId: context.user.id,
+            threadId: input.threadId,
         });
         console.log("[DEBUG] Message created:", created.id);
         

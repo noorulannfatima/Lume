@@ -8,6 +8,8 @@ import { orpc } from '@/lib/orpc'
 
 import { useSession } from 'next-auth/react'
 import { Skeleton } from '@/components/ui/skeleton'
+import { ThreadSidebar } from './_components/thread/ThreadSidebar'
+import { ThreadProvider } from '@/providers/ThreadProvider'
 
 const ChannelPage = () => {
 
@@ -74,8 +76,19 @@ const ChannelPage = () => {
             )}
           </div>
         </div> 
+
+        {/* Thread Sidebar */}
+        <ThreadSidebar/>
     </div>
   )
 }
 
-export default ChannelPage
+
+const ThisIsTheChannelPage = () => {
+    return (
+        <ThreadProvider>
+            <ChannelPage/>
+        </ThreadProvider>
+    )
+}
+
